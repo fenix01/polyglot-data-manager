@@ -1,0 +1,13 @@
+.vscode
+*.yml
+*.log
+**/__pycache__
+build
+_build
+dist
+polymanager.egg-info
+.VSCodeCounter
+venv/
+env/
+*.pem
+*.pyc
