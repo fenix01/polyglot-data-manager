@@ -308,3 +308,6 @@ class DGraphHandler(GraphHandler):
             return json_res["q"][0]
         else:
             return None
+
+    def delete_relationships(self, namespace, collection_name, edges_id):
+        pass

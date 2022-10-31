@@ -4,7 +4,6 @@ from fastapi.testclient import TestClient
 from polymanager.containers import CoreContainer, DGraphContainer, RedisContainer
 from polymanager.helper.conf_helper import load_env
 from polymanager.routers import dgraph
-import time
 import json
 
 import pytest

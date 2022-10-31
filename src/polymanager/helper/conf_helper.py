@@ -4,8 +4,8 @@ import os
 def load_env():
     env = dict()
     env["node_type"] = os.environ.get('NODE_TYPE')
-    if env["node_type"] not in ["master", "slave"]:
-        raise Exception("NODE_TYPE should be equal to master or slave")
+    if env["node_type"] not in ["chief", "worker"]:
+        raise Exception("NODE_TYPE should be equal to chief or worker")
     env["rest_port"] = os.environ.get('REST_PORT')
     env["kvrocks_hostname"] = os.environ.get('KVROCKS_HOSTNAME')
     env["kvrocks_port"] = os.environ.get('KVROCKS_PORT')
@@ -18,6 +18,12 @@ def load_env():
     if "clickhouse" in env["connectors"]:
         env["clickhouse_hostname"] = os.environ.get('CLICKHOUSE_HOSTNAME')
         env["clickhouse_port"] = os.environ.get('CLICKHOUSE_PORT')
+
+    if "arangodb" in env["connectors"]:
+        env["arangodb_hostname"] = os.environ.get('ARANGODB_HOSTNAME')
+        env["arangodb_port"] = os.environ.get('ARANGODB_PORT')
+        env["arangodb_user"] = os.environ.get('ARANGODB_USER')
+        env["arangodb_password"] = os.environ.get('ARANGODB_PASSWORD')
     
     if "clickhouse" in env["connectors"]:
         if os.environ.get('DGRAPH_ADDRESSES'):

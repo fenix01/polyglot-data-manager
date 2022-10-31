@@ -124,6 +124,9 @@ class DgraphCollection(GraphCollection):
         result["status"] = "success"
         return result
 
+    def delete_relationships(self, edges_id):
+        pass
+
     def __init__(self, internal_schema: KVRocksInternalSchema, collection_name):
         self.internal_schema = internal_schema
         exists = self.internal_schema.get_schema(collection_name)

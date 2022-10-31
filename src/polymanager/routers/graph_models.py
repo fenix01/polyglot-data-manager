@@ -4,6 +4,17 @@ from typing import (
 )
 from typing import Optional
 
+class DelEdges(BaseModel):
+    collection: str
+    namespace: str
+    edges_id: list = []
+
+class UpdateEdge(BaseModel):
+    collection: str
+    namespace: str
+    reset: Optional[bool] = False
+    edge: dict = {}
+
 class UpdateRelationship(BaseModel):
     collection: str
     namespace: str
@@ -41,6 +52,7 @@ class Collection(BaseModel):
     collection: str
     namespace: str
     field_value: dict = {}
+    global_options: dict = {}
     class Config:
         fields = {'field_value': 'fields'}
 

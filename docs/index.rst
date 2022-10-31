@@ -17,6 +17,7 @@ Welcome to Polyglot Data Manager's documentation!
    ./manticoresearch.rst
    ./clickhouse.rst
    ./dgraph.rst
+   ./arangodb.rst
 
 Indices and tables
 ==================

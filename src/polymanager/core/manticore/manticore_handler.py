@@ -176,3 +176,37 @@ class ManticoreHandler(DocumentHandler):
         if not parsed_resp["created"]:
             return False
         return True
+
+    def page_documents(self, index_name, request, page, per_page, sort_attr, threats, countries):
+        url = self.url + "/json/search"
+        doc = dict()
+        doc["index"] = index_name
+        doc["limit"] = per_page
+        doc["offset"] = (page - 1) * per_page
+        doc["query"] = dict()
+        doc["query"]["bool"] = dict()
+        doc["query"]["bool"]["must"] = list()
+        bool_query = doc["query"]["bool"]["must"]
+
+        bool_query.append({"match" : {"_all" : request}})
+
+        if threats:
+            for threat in threats:
+                bool_query.append({"equals" : {"threats" : threat}})
+        if countries:
+            for country in countries:
+                bool_query.append({"equals" : {"countries" : country}})
+        if sort_attr:
+            doc["sort"] = [
+                {sort_attr: {"order": "desc"}},
+                {"_score": {"order": "desc"}}
+                ]
+
+        self._log.info(doc)
+        response = requests.post(url, headers={"Content-Type": "application/json"}, data=json.dumps(doc))
+        if response.status_code != 200:
+            raise Exception(response.json())
+        parsed_resp = response.json()
+        if not parsed_resp["hits"]:
+            raise Exception(response.json())
+        return parsed_resp["hits"]["hits"]

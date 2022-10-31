@@ -3,3 +3,4 @@ from polymanager.containers.redis_container import RedisContainer
 from polymanager.containers.dgraph_container import DGraphContainer
 from polymanager.containers.manticore_container import ManticoreContainer
 from polymanager.containers.clickhouse_container import ClickhouseContainer
+from polymanager.containers.arangodb_container import ArangoDBContainer

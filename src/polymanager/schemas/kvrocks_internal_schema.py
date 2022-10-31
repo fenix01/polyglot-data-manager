@@ -1,7 +1,8 @@
 from polymanager.schemas.dgraph.dgraph_schema import DGraphSchema
 from polymanager.schemas.manticore.manticoresearch_schema import ManticoreSearchSchema
 from polymanager.schemas.clickhouse.clickhouse_schema import ClickhouseSchema
-from polymanager.containers import RedisContainer, DGraphContainer, ManticoreContainer, ClickhouseContainer
+from polymanager.schemas.arangodb.arangodb_schema import ArangodbSchema
+from polymanager.containers import RedisContainer, DGraphContainer, ManticoreContainer, ClickhouseContainer, ArangoDBContainer
 from polymanager.exceptions.schema_exception import ExistingSchema
 import json
 
@@ -9,7 +10,7 @@ class KVRocksInternalSchema:
     "kvrocks is used to store all schemas for various datasources"
 
     def __init__(self, datastore):
-        if datastore not in ["manticoresearch", "dgraph", "clickhouse"]:
+        if datastore not in ["manticoresearch", "dgraph", "clickhouse", "arangodb"]:
             raise Exception("this datastore is not supported")
         self.datastore = datastore
 
@@ -26,6 +27,8 @@ class KVRocksInternalSchema:
                     schema_obj = ManticoreSearchSchema.load_schema(json.loads(res[schema_name]))
                 elif self.datastore == "clickhouse":
                     schema_obj = ClickhouseSchema.load_schema(json.loads(res[schema_name]))
+                elif self.datastore == "arangodb":
+                    schema_obj = ArangodbSchema.load_schema(json.loads(res[schema_name]))
                 schemas.append(schema_obj)
             return schemas
         else:
@@ -42,6 +45,8 @@ class KVRocksInternalSchema:
             return ManticoreSearchSchema.load_schema(json.loads(schema))
         elif self.datastore == "clickhouse":
             return ClickhouseSchema.load_schema(json.loads(schema))
+        elif self.datastore == "arangodb":
+            return ArangodbSchema.load_schema(json.loads(schema))
 
     def populate_database(self, schema):
         if self.datastore == "dgraph":
@@ -53,6 +58,9 @@ class KVRocksInternalSchema:
         elif self.datastore == "clickhouse":
             clickhouse_handler = ClickhouseContainer().handler()
             clickhouse_handler.insert_schema(schema)
+        elif self.datastore == "arangodb":
+            arangodb_handler = ArangoDBContainer().handler()
+            arangodb_handler.insert_schema(schema)
 
     def delete_database(self, schema):
         if self.datastore == "dgraph":
@@ -66,6 +74,9 @@ class KVRocksInternalSchema:
         elif self.datastore == "clickhouse":
             clickhouse_handler = ClickhouseContainer().handler()
             clickhouse_handler.delete_schema(schema)
+        elif self.datastore == "arangodb":
+            arangodb_handler = ArangoDBContainer().handler()
+            arangodb_handler.delete_schema(schema)
         
     def save_schema(self, schema):
         #validate schema before insert

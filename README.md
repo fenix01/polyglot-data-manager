@@ -13,6 +13,10 @@ This tool will put an abstraction layer over your databases and provide the foll
 *  An API to write data and enforce the schema
 
 
+    ![Architecture of polyglot data manager](docs/schemas/archi.png)
+
+    
+
 Regarding read access to data, you just need to connect to your database and make a query. This tool will not handle this part, it is not its objective.
 
 What this tools is not :
@@ -33,13 +37,21 @@ Today, it exists many kind of databases :
 
 This tools supports the following database :
 
-*  Graph databases : `Dgraph <https://dgraph.io/>`_
-*  SearchEngine : `ManticoreSearch <https://dgraph.io/>`_
-*  Column oriented databases / analytics : `Clickhouse <https://clickhouse.com/>`_
+*  Graph databases :
+    * Dgraph <https://dgraph.io/>
+    * ArangoDB <https://www.arangodb.com/>
+*  SearchEngine :
+    * ManticoreSearch <https://manticoresearch.com/>
+*  Column oriented databases / analytics :
+    * Clickhouse <https://clickhouse.com/>
+
+
 
 ## Documentation
 
-The documentation has been written with Sphinx. The html doc is located in docs/_build/html/index.html
+The documentation has been written with Sphinx.
+https://polyglot-data-manager.readthedocs.io/en/latest/
+
 
 ## Usage
 

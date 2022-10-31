@@ -32,6 +32,10 @@ class GraphHandler(ABC):
         pass
 
     @abstractmethod
+    def delete_relationships(self, namespace, collection_name, edges_id):
+        pass
+
+    @abstractmethod
     def truncate(self, namespace, collection_name):
         pass
 

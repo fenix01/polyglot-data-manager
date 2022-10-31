@@ -28,5 +28,9 @@ class GraphCollection(ABC):
         pass
 
     @abstractmethod
+    def delete_relationships(self, edges_id):
+        pass  
+
+    @abstractmethod
     def truncate(self):
         pass

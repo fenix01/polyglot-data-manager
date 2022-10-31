@@ -36,6 +36,13 @@ Today, it exists many kind of databases :
 
 This tools supports the following database :
 
-*  Graph databases : `Dgraph <https://dgraph.io/>`_
-*  SearchEngine : `ManticoreSearch <https://dgraph.io/>`_
-*  Column oriented databases / analytics : `Clickhouse <https://clickhouse.com/>`_
+*  Graph databases :
+
+   *  Dgraph: `<https://dgraph.io/>`_
+   *  ArangoDB: `<https://www.arangodb.com/>`_
+*  SearchEngine :
+
+   *  ManticoreSearch: `<https://manticoresearch.com/>`_
+*  Column oriented databases / analytics :
+
+   *  Clickhouse: `<https://clickhouse.com/>`_

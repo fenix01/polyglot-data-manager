@@ -1,7 +1,7 @@
 DGraph
 ===========
 
-APIs for Clickhouse : http://127.0.0.1:8016/docs#/dgraph
+APIs for Dgraph : http://127.0.0.1:8016/docs#/dgraph
 
 Supported types
 ------------------------
@@ -30,27 +30,23 @@ Examples
 .. code-block:: bash
 
     curl -X 'POST' \
-    'http://127.0.0.1:8016/collection/clickhouse' \
+    'http://127.0.0.1:8016/collection/dgraph' \
     -H 'accept: application/json' \
     -H 'Content-Type: application/json' \
     -d '{
-    "collection": "collection1",
-    "namespace": "namespace1",
-    "fields": {
-        "field1": {
-            "type": "text"
+        "collection": "collection1",
+        "namespace": "namespace1",
+        "fields": {
+            "test": {
+                "type": "text"
+            },
+            "test2": {
+                "type": "text",
+                "index":{
+                    "tokenizer": "hash"
+                }
+            }
         },
-        "field2": {
-            "type":"[int]"
-        },
-        "field3": {
-            "type":"[float]"
-        },
-        "id": {
-            "type":"int"
+        "global_options": {
         }
-    },
-    "global_options": {
-        "order_by": ["id"]
-    }
     }'

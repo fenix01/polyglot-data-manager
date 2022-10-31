@@ -4,6 +4,7 @@ from polymanager.containers import CoreContainer
 from polymanager.routers import dgraph
 from polymanager.routers import manticoresearch
 from polymanager.routers import clickhouse
+from polymanager.routers import arangodb
 from polymanager.schemas.kvrocks_internal_schema import KVRocksInternalSchema
 from polymanager.helper.conf_helper import load_env
 from fastapi.routing import APIRoute
@@ -43,12 +44,16 @@ class PolyglotDataManager:
             elif datastore == "clickhouse":
                 internal_schema = KVRocksInternalSchema( "clickhouse")
                 app.include_router(clickhouse.router)
+            elif datastore == "arangodb":
+                internal_schema = KVRocksInternalSchema( "arangodb")
+                app.include_router(arangodb.router)
         
-        #check node type (master or slave )
-        if CoreContainer.config.node_type() == "slave":
+        #check node type (chief or worker )
+        if CoreContainer.config.node_type() == "worker":
             excluded_schema_handlers = ["add_clickhouse_collection", "delete_clickhouse_collection",
             "add_dgraph_collection", "delete_dgraph_collection",
-            "add_manticore_collection", "delete_manticore_collection"]
+            "add_manticore_collection", "delete_manticore_collection",
+            "add_arangodb_collection", "delete_arangodb_collection"]
             routes_to_exclude = [r for r in app.routes if r.name in excluded_schema_handlers]
             for x in routes_to_exclude:
                 app.routes.remove(x)

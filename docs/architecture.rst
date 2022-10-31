@@ -10,8 +10,8 @@ It's an abstraction layer to write data and manage schema more easily. But it wi
 
 This API could be execute with 2 modes :
 
-* Master : it allows the API to manage all of your schemas. There should be only one master !
-* Slave : it allows to deploy more nodes to handle more write requests.
+* Chief : it allows the API to manage all of your schemas. There should be only one chief !
+* Worker : it allows to deploy more nodes to handle more write requests.
 
 .. image:: ./schemas/archi.png
    :align: center
