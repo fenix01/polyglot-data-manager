@@ -32,7 +32,7 @@ def wait_for_databases(session_scoped_container_getter):
 @pytest.fixture
 def clean_databases():
     arangodb_handler = ArangoDBContainer().handler()
-    res = arangodb_handler.drop_all()
+    arangodb_handler.drop_all()
     db_ = RedisContainer.db()
     db_.delete("arangodb")
 
@@ -68,10 +68,9 @@ def test_add_collection(wait_for_databases, clean_databases):
         }
     })
     assert response.status_code == 200
-    #assert response.json() == {'detail': {'error': 'this collection already exists', 'status': 'failed'}}
 
 def test_delete_collection(wait_for_databases, clean_databases):
-    response = client.post("/collection/arangodb", json={
+    client.post("/collection/arangodb", json={
 	"collection": "collection2",
 	"namespace": "test",
     "global_options": {
@@ -90,14 +89,17 @@ def test_delete_collection(wait_for_databases, clean_databases):
     })
     response = client.delete("/collection/arangodb", json={
 	"collection": "collection2",
-    "empty": True,
+    "empty": False,
 	"namespace": "test"
-})
+    })
+    arangodb_query = ArangoDBContainer().handler()
+    res = arangodb_query.has_collection("test", "collection2")
     assert response.status_code == 200
-    #assert response.json() == {'detail': {'error': 'this collection already exists', 'status': 'failed'}}
+    assert res == False
+    
 
 def test_add_node(wait_for_databases, clean_databases):
-    response = client.post("/collection/arangodb", json={
+    client.post("/collection/arangodb", json={
     "collection": "collection3",
     "namespace": "test",
     "global_options": {
@@ -127,7 +129,7 @@ def test_add_node(wait_for_databases, clean_databases):
     assert response.status_code == 200
 
 def test_add_arangodb_nodes(wait_for_databases, clean_databases):
-    response = client.post("/collection/arangodb", json={
+    client.post("/collection/arangodb", json={
     "collection": "collection4",
     "namespace": "test",
     "global_options": {
@@ -421,7 +423,7 @@ def test_delete_relationships(wait_for_databases, clean_databases):
         }
     })
     arangodb_query = ArangoDBContainer().handler()
-    exists = arangodb_query.query("test", """
+    arangodb_query.query("test", """
     WITH collection10
     FOR v, e, p
     IN 1..1
@@ -432,7 +434,7 @@ def test_delete_relationships(wait_for_databases, clean_databases):
 
     edge_id1 = json.loads(response2.text)["edge_id"]["_key"]
     edge_id2 = json.loads(response3.text)["edge_id"]["_key"]
-    response4 = client.delete("/collection/arangodb/relationships", json={
+    client.delete("/collection/arangodb/relationships", json={
     "collection": "collection11",
     "namespace": "test",
     "edges_id": [edge_id1, edge_id2]
@@ -448,7 +450,7 @@ def test_delete_relationships(wait_for_databases, clean_databases):
     assert len(exists["result"]) == 0
 
 def test_get_collections(wait_for_databases, clean_databases):
-    response = client.post("/collection/arangodb", json={
+    client.post("/collection/arangodb", json={
 	"collection": "collection9",
 	"namespace": "test",
 	"fields":

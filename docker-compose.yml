@@ -1,0 +1,87 @@
+version : "2.4"
+services:
+  polyglot:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    image: polyglot
+    depends_on:
+      - kvrocks
+      - zero
+      - alpha
+      - manticore
+      - clickhouse
+      - arangodb
+    ports:
+      - "127.0.0.1:8016:8016"
+    environment:
+      - NODE_TYPE=chief
+      - REST_PORT=8016
+      - KVROCKS_HOSTNAME=kvrocks
+      - KVROCKS_PORT=6666
+      - CLICKHOUSE_HOSTNAME=clickhouse
+      - CLICKHOUSE_PORT=8123
+      - ARANGODB_HOSTNAME=arangodb
+      - ARANGODB_PORT=8529
+      - ARANGODB_USER=root
+      - ARANGODB_PASSWORD=sinmao
+      - MANTICORESEARCH_HOSTNAME=manticore
+      - MANTICORESEARCH_PORT=9308
+      - DGRAPH_ADDRESSES=alpha
+      - DGRAPH_PORT=9081
+      - DGRAPH_ADMIN_PORT=8080
+      - CONNECTORS=manticoresearch,dgraph,clickhouse,arangodb
+    volumes:
+    - ./logs:/usr/src/app/logs
+    - ./etc:/usr/src/app/etc
+  kvrocks:
+    image: 'kvrocks/kvrocks'
+    ports:
+      - 127.0.0.1:6666:6666
+  arangodb:
+    image: arangodb/arangodb:3.9.2
+    environment:
+      - ARANGO_ROOT_PASSWORD=sinmao
+    ports:
+      - '127.0.0.1:8529:8529'
+  zero:
+    image: dgraph/dgraph:v21.12.0
+    ports:
+      - 127.0.0.1:5080:5080
+      - 127.0.0.1:6080:6080
+    command: dgraph zero --my=zero:5080
+  alpha:
+    image: dgraph/dgraph:v21.12.0
+    ports:
+      - 127.0.0.1:8081:8080
+      - 127.0.0.1:9081:9080
+    command: dgraph alpha --logtostderr --log_dir=./logs --my=alpha:7080 --zero=zero:5080 --cache=size-mb=512 --security=whitelist=0.0.0.0/0
+  ratel:
+    image: dgraph/dgraph:v20.11.3
+    ports:
+      - 127.0.0.1:8000:8000
+    command: dgraph-ratel
+    depends_on:
+      - alpha
+      - zero
+  manticore:
+    image: manticoresearch/manticore:4.0.2
+    ports:
+      - 127.0.0.1:9306:9306
+      - 127.0.0.1:9308:9308
+    ulimits:
+      nproc: 65535
+      nofile:
+         soft: 65535
+         hard: 65535
+      memlock:
+        soft: -1
+        hard: -1
+  clickhouse:
+    image: yandex/clickhouse-server:21.6.4-alpine
+    cpus: 0.40
+    ports:
+      - 127.0.0.1:9000:9000
+      - 127.0.0.1:8123:8123
+    volumes:
+      - ./etc/clickhouse.xml:/etc/clickhouse-server/config.xml:ro

@@ -1,6 +1,7 @@
 
 import logging
-from pyArango.connection import *
+import requests
+from pyArango.connection import Connection
 from polymanager.core.graph_handler import GraphHandler
 import uuid
 import json
@@ -68,6 +69,12 @@ class ArangoDBHandler(GraphHandler):
         if collection_opts:
             self.create_indexes(collection, collection_opts)
 
+    def delete_schema(self, schema):
+        db_name = schema.get_namespace()
+        self.db = self.conn[db_name]
+        collection = self.db[schema.get_collection_name()]
+        collection.delete()
+
         
     def drop_all(self):
         for db in self.conn.databases.keys():
@@ -75,7 +82,7 @@ class ArangoDBHandler(GraphHandler):
                 continue
             session = requests.Session()
             session.auth = (self.user, self.password)
-            res = session.delete(self.url+"/_api/database/"+db)
+            session.delete(self.url+"/_api/database/"+db)
 
     def add_nodes(self, namespace, collection_name, list_nodes, ref_node):
         self.db = self.conn[namespace]
@@ -131,6 +138,7 @@ class ArangoDBHandler(GraphHandler):
         doc.set(node)
         doc.save()
 
+    #it is not used for arangodb
     def reset_relationships(self, relationships, node_id):
         pass
 
@@ -142,11 +150,13 @@ class ArangoDBHandler(GraphHandler):
             FILTER e._from == '{}' || e._to == '{}'
             RETURN e
             '''.format(collection_name, node_id, node_id)
-            queryResult = self.db.AQLQuery(query, rawResults=True)
-            return queryResult.response["result"]
-        except :
+            query_result = self.db.AQLQuery(query, rawResults=True)
+            return query_result.response["result"]
+        except Exception:
             return None
 
+    def has_collection(self, namespace, collection):
+        return self.conn[namespace].hasCollection(collection)
 
     def update_relationships(self, namespace, collection_name, relationships):
         try :
