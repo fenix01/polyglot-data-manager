@@ -1,0 +1,2 @@
+class NotReadyDatabase(Exception):
+    pass

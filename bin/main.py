@@ -5,6 +5,7 @@ from polymanager.routers import dgraph
 from polymanager.routers import manticoresearch
 from polymanager.routers import clickhouse
 from polymanager.routers import arangodb
+from polymanager.routers import global_api
 from polymanager.schemas.kvrocks_internal_schema import KVRocksInternalSchema
 from polymanager.helper.conf_helper import load_env
 from fastapi.routing import APIRoute
@@ -33,6 +34,9 @@ class PolyglotDataManager:
         #start app
         
         app.openapi = PolyglotDataManager.custom_openapi
+
+        #insert global api (health check)
+        app.include_router(global_api.router)
         #prepare internal schema
         for datastore in CoreContainer.config.connectors():
             if datastore == "manticoresearch":
